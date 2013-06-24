@@ -73,15 +73,21 @@ function load_controller(hash){
 	return controller[hash.action](hash.params);
 }
 
+function router(path){
+	return {
+		controller: path[0],
+		action: path[1] || 'index',
+		params: path.slice(2)
+	}
 }
 
 //Waits for the template and controller to be retrieved from the server
 //Then renders the page
 //Controllers should ultimately return the data the page will use
-function render_page(pageName){
-	$.when(get_template(pageName), load_controller(pageName)).done(function(template, controller) {
-		console.log(template[0]);
-		console.log(controller);
+function render_page(path){
+	var hash = router(path);
+
+	$.when(get_template(hash.controller), load_controller(hash)).done(function(template, controller) {
 		render(template[0], controller);
 	});
 }
