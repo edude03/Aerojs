@@ -20,7 +20,6 @@ function render(template, content, target){
 //that defines basic rest stuff
 
 
-
 //Retrieve the content from the server
 function get_template(path){
 	//Return a promise to be resolved later
@@ -53,24 +52,27 @@ function _loc(){
 
 
 /* Example Controllers, these will be retrieved via AJAX in the future */
-function testController(){
-	return {body: "Dis be a bumbajonny test"}
-}
+var test2Controller = {
+	view: function(value){
+		return {body: "value is " + value};
+	},
 
-function homeController(){
-	return {name: 'Michael'};
+	index: function(){
+		return {body: "This is the index"};
+	}
 }
-
 
 //Determine which controller to load, then retrieve it, 
 //Right now it loads example controllers but will
 //Be modified to retrieve the controller from /controllers/controllername.js
 //To this end it needs to return a promise as well
-function load_controller(controllerName){
-	var fn = controllerName + 'Controller';
+function load_controller(hash){
+	//Get the controller object
+	var controller = eval(hash.controller + 'Controller');
+	
+	return controller[hash.action](hash.params);
+}
 
-	//I hear that evals are evil?
-	return eval(fn)();
 }
 
 //Waits for the template and controller to be retrieved from the server
