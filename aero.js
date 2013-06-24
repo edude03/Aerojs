@@ -73,9 +73,13 @@ function load_controller(hash){
 	return controller[hash.action](hash.params);
 }
 
+
+// Routes urls to /#/{controller}/{action}/{params}/{more}/{params}/
 function router(path){
 	return {
 		controller: path[0],
+
+		//Load the index action if one isn't defined
 		action: path[1] || 'index',
 		params: path.slice(2)
 	}
@@ -85,9 +89,12 @@ function router(path){
 //Then renders the page
 //Controllers should ultimately return the data the page will use
 function render_page(path){
+	//Break the path into components
 	var hash = router(path);
 
+	//When the template and controllers are done loading, 
 	$.when(get_template(hash.controller), load_controller(hash)).done(function(template, controller) {
+		//Render the page
 		render(template[0], controller);
 	});
 }
